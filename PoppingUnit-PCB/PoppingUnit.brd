@@ -28,18 +28,18 @@
 <layer number="18" name="Vias" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="19" name="Unrouted" color="13" fill="1" visible="yes" active="yes"/>
 <layer number="20" name="Dimension" color="15" fill="1" visible="yes" active="yes"/>
-<layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="yes"/>
-<layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="yes"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="no" active="yes"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="no" active="yes"/>
+<layer number="23" name="tOrigins" color="15" fill="1" visible="no" active="yes"/>
+<layer number="24" name="bOrigins" color="15" fill="1" visible="no" active="yes"/>
 <layer number="25" name="tNames" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="26" name="bNames" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="27" name="tValues" color="7" fill="1" visible="no" active="yes"/>
-<layer number="28" name="bValues" color="7" fill="1" visible="no" active="yes"/>
+<layer number="27" name="tValues" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="28" name="bValues" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="no" active="yes"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="yes"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="yes"/>
-<layer number="32" name="bCream" color="7" fill="5" visible="yes" active="yes"/>
+<layer number="32" name="bCream" color="7" fill="5" visible="no" active="yes"/>
 <layer number="33" name="tFinish" color="6" fill="3" visible="no" active="yes"/>
 <layer number="34" name="bFinish" color="6" fill="6" visible="no" active="yes"/>
 <layer number="35" name="tGlue" color="7" fill="4" visible="no" active="yes"/>
@@ -495,6 +495,20 @@ by exp-project-lbr.ulp</description>
 <text x="14" y="8" size="1.27" layer="27">OUT+</text>
 <text x="14" y="-9" size="1.27" layer="27">OUT-</text>
 </package>
+<package name="BUTTON_MOMENTARY_KMR211G">
+<description>KMR211G momentary surface mount pushbutton</description>
+<smd name="P$1" x="-2" y="0.8" dx="0.9" dy="1" layer="1" rot="R180" thermals="no"/>
+<smd name="P$2" x="2.1" y="0.8" dx="0.9" dy="1" layer="1" thermals="no"/>
+<smd name="P$3" x="-2" y="-0.8" dx="0.9" dy="1" layer="1" thermals="no"/>
+<smd name="P$4" x="2.1" y="-0.8" dx="0.9" dy="1" layer="1" thermals="no"/>
+<wire x1="-1.9" y1="1.2" x2="2.4" y2="1.2" width="0.127" layer="51"/>
+<wire x1="2.4" y1="1.2" x2="2.4" y2="-1.2" width="0.127" layer="51"/>
+<wire x1="2.4" y1="-1.2" x2="-2.3" y2="-1.2" width="0.127" layer="51"/>
+<wire x1="-2.3" y1="-1.2" x2="-2.3" y2="0.8" width="0.127" layer="51"/>
+<wire x1="-2.3" y1="0.8" x2="-1.9" y2="1.2" width="0.127" layer="51"/>
+<text x="-3" y="-3" size="1.27" layer="27">&gt;VALUE</text>
+<text x="-3" y="2" size="1.27" layer="25">&gt;NAME</text>
+</package>
 </packages>
 </library>
 <library name="linear">
@@ -888,9 +902,16 @@ Please make sure your boards conform to these design rules.</description>
 <attribute name="VALUE" x="55.73" y="63.5" size="0.4064" layer="27"/>
 </element>
 <element name="U$19" library="blinkinlabs" package="DSN2596" value="DC_DC" x="65" y="31.5" smashed="yes"/>
-<element name="J3" library="con-amp" package="555153-1" value="" x="5.75" y="15" rot="R270"/>
-<element name="R18" library="adafruit" package="R0603" value="1k" x="15" y="39" rot="R180"/>
-<element name="LED2" library="SparkFun" package="LED5MM" value="" x="18" y="28" rot="R270"/>
+<element name="J3" library="con-amp" package="555153-1" value="" x="5.75" y="15" smashed="yes" rot="R270">
+<attribute name="VALUE" x="5.623" y="4.84" size="1.778" layer="27"/>
+</element>
+<element name="R18" library="adafruit" package="R0603" value="1k" x="15" y="39" smashed="yes" rot="R180"/>
+<element name="LED2" library="SparkFun" package="LED5MM" value="" x="18" y="28" smashed="yes" rot="R270">
+<attribute name="VALUE" x="16.1966" y="24.7996" size="1.27" layer="27" ratio="10" rot="R270"/>
+</element>
+<element name="U$20" library="blinkinlabs" package="BUTTON_MOMENTARY_KMR211G" value="" x="12.75" y="58.75" smashed="yes" rot="R180">
+<attribute name="VALUE" x="15.75" y="61.75" size="1.27" layer="27" rot="R180"/>
+</element>
 </elements>
 <signals>
 <signal name="GND" class="1">
@@ -1152,6 +1173,11 @@ Please make sure your boards conform to these design rules.</description>
 <contactref element="J3" pad="7"/>
 <contactref element="J3" pad="8"/>
 <contactref element="LED2" pad="K"/>
+<contactref element="U$20" pad="P$2"/>
+<contactref element="U$20" pad="P$1"/>
+<wire x1="14.75" y1="57.95" x2="15.74" y2="57.95" width="0.4064" layer="1"/>
+<wire x1="15.74" y1="57.95" x2="17.21" y2="56.48" width="0.4064" layer="1"/>
+<wire x1="14.75" y1="57.95" x2="10.65" y2="57.95" width="0.4064" layer="1"/>
 </signal>
 <signal name="RX">
 <contactref element="U1" pad="20"/>
@@ -1167,10 +1193,10 @@ Please make sure your boards conform to these design rules.</description>
 <via x="18.25" y="44" extent="1-16" drill="0.3"/>
 <wire x1="18.25" y1="44" x2="18.75" y2="44" width="0.254" layer="16"/>
 <wire x1="18.75" y1="44" x2="20.25" y2="42.5" width="0.254" layer="16"/>
-<wire x1="20.25" y1="42.5" x2="27.25" y2="42.5" width="0.254" layer="16"/>
-<wire x1="27.25" y1="42.5" x2="27.5" y2="42.25" width="0.254" layer="16"/>
-<via x="27.5" y="42.25" extent="1-16" drill="0.3"/>
-<wire x1="27.5" y1="42.25" x2="27.5" y2="41" width="0.254" layer="1"/>
+<wire x1="20.25" y1="42.5" x2="26.75" y2="42.5" width="0.254" layer="16"/>
+<wire x1="26.75" y1="42.5" x2="27.5" y2="41.75" width="0.254" layer="16"/>
+<via x="27.5" y="41.75" extent="1-16" drill="0.3"/>
+<wire x1="27.5" y1="41.75" x2="27.5" y2="41" width="0.254" layer="1"/>
 <wire x1="27.5" y1="41" x2="26" y2="39.5" width="0.254" layer="1"/>
 <wire x1="26" y1="39.5" x2="26" y2="24.25" width="0.254" layer="1"/>
 <wire x1="26" y1="24.25" x2="25.75" y2="24" width="0.254" layer="1"/>
@@ -1217,6 +1243,11 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="18.75" y1="48.5" x2="19.15" y2="48.1" width="0.254" layer="1"/>
 <wire x1="19.975" y1="48.1" x2="19.15" y2="48.1" width="0.254" layer="1"/>
 <wire x1="16.85" y1="54.5" x2="18.75" y2="54.5" width="0.254" layer="1"/>
+<contactref element="U$20" pad="P$4"/>
+<contactref element="U$20" pad="P$3"/>
+<wire x1="14.75" y1="59.55" x2="16.68" y2="59.55" width="0.4064" layer="1"/>
+<wire x1="16.68" y1="59.55" x2="17.21" y2="59.02" width="0.4064" layer="1"/>
+<wire x1="10.65" y1="59.55" x2="14.75" y2="59.55" width="0.4064" layer="1"/>
 </signal>
 <signal name="N$8">
 <contactref element="R8" pad="1"/>
@@ -1731,7 +1762,6 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="15" y1="47.25" x2="14" y2="47.25" width="0.4064" layer="1"/>
 <wire x1="19.975" y1="47.6" x2="18.6" y2="47.6" width="0.254" layer="1"/>
 <wire x1="18.6" y1="47.6" x2="18.75" y2="47.5" width="0.254" layer="1"/>
-<wire x1="27.025" y1="43.6" x2="30.375" y2="43.5" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$7">
 <contactref element="X1" pad="VBUS"/>
@@ -2009,10 +2039,10 @@ Please make sure your boards conform to these design rules.</description>
 <approved hash="3,1,30e27513798b75eb"/>
 <approved hash="3,1,e2ea80949f64fd1a"/>
 <approved hash="3,1,7cb702c902aa7cd4"/>
-<approved hash="19,1,954e62ba61cb963f"/>
 <approved hash="19,1,8e7e798a7d8d8a79"/>
-<approved hash="19,1,be7e3f8a3b8aba7e"/>
+<approved hash="19,1,954e62ba61cb963f"/>
 <approved hash="19,1,a54e24ba27cca638"/>
+<approved hash="19,1,be7e3f8a3b8aba7e"/>
 </errors>
 </board>
 </drawing>
