@@ -5,7 +5,7 @@
 #define DEVICE_ADDRESS   0
 
 // System baud rate. Leave at 250000 (35 boards * 1 config byte * 16 bits/channel * 60fps = 74880baud minimum)
-#define BAUD_RATE 250000
+#define BAUD_RATE 9600
 
 #define PIN_STATUS_LED   13
 
@@ -59,12 +59,6 @@ bool handleData(uint8_t dataSize, uint16_t* data) {
 
 
 void loop() {
-  
-  while(true) {
-    popper.pop(5, 3000);
-    delay(1000);
-  }
-
   // Handle incoming data from USB
   if(Serial.available()) {
     digitalWrite(PIN_STATUS_LED, LOW);
