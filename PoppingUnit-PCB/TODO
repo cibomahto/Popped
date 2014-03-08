@@ -1,0 +1,7 @@
+For RevB:
+x-Move Ethernet connector out 2.5mm
+x-add shield tiedown pins for ethernet connector
+x-Replace output1 popping line
+x-Push USB back a smidge
+x-move status led to ??
+x-Add second status LED (Fire!)
