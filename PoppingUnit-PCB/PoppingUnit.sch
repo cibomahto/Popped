@@ -8747,9 +8747,9 @@ Standard 2-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <wire x1="257.81" y1="-115.57" x2="270.51" y2="-115.57" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="(TXD1/INT3)PD3"/>
-<wire x1="73.66" y1="7.62" x2="76.2" y2="7.62" width="0.1524" layer="91"/>
-<label x="76.2" y="7.62" size="1.778" layer="95" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="(SDA/INT1)PD1"/>
+<wire x1="73.66" y1="2.54" x2="76.2" y2="2.54" width="0.1524" layer="91"/>
+<label x="76.2" y="2.54" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="5V" class="0">
@@ -9069,14 +9069,14 @@ Standard 2-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 </net>
 <net name="STATUS_1" class="0">
 <segment>
-<pinref part="U1" gate="G$1" pin="(SDA/INT1)PD1"/>
-<wire x1="73.66" y1="2.54" x2="76.2" y2="2.54" width="0.1524" layer="91"/>
-<label x="76.2" y="2.54" size="1.778" layer="95" xref="yes"/>
-</segment>
-<segment>
 <wire x1="167.64" y1="58.42" x2="167.64" y2="60.96" width="0.1524" layer="91"/>
 <label x="167.64" y="60.96" size="1.778" layer="95" rot="R90" xref="yes"/>
 <pinref part="R18" gate="G$1" pin="2"/>
+</segment>
+<segment>
+<pinref part="U1" gate="G$1" pin="(TXD1/INT3)PD3"/>
+<wire x1="73.66" y1="7.62" x2="76.2" y2="7.62" width="0.1524" layer="91"/>
+<label x="76.2" y="7.62" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
 <net name="N$12" class="0">

@@ -4,24 +4,23 @@
 // Address that this device responds to. Change this for each board.
 #define DEVICE_ADDRESS   0
 
-// System baud rate. Leave at 250000 (35 boards * 1 config byte * 16 bits/channel * 60fps = 74880baud minimum)
+// System baud rate. Leave at xxx
 #define BAUD_RATE 9600
 
-#define PIN_STATUS_LED   13
+#define PIN_STATUS_LED    13  // PC7
+#define PIN_STATUS_1_LED   1  // PD3 *Note: Must disable TX, might not actually work.
+
+
+#define SIGNAL_DISPLAY_TIMEOUT 100  // Number of seconds to continue flashing the display LED, 
+long lastSignalTime;
+
 
 Protocol usbReceiver;
 Protocol rs485Receiver;
 
 PoppingOutput popper;
 
-
 void setup() {
-  pinMode(PIN_STATUS_LED, OUTPUT);
-  digitalWrite(PIN_STATUS_LED, HIGH);
-  
-  // Popping outputs
-  popper.init();
-
   // USB input (The baud rate specified here doesn't matter)
   Serial.begin(115200);
   usbReceiver.reset();
@@ -29,6 +28,24 @@ void setup() {
   // RS485 input
   Serial1.begin(BAUD_RATE);
   rs485Receiver.reset();
+    
+  // Status LEDs
+  pinMode(PIN_STATUS_LED, OUTPUT);
+  analogWrite(PIN_STATUS_LED, 128);
+  TCCR4B |= (1<<CS43);
+  TCCR4B |= (1<<CS42);
+  TCCR4B |= (1<<CS41);
+  TCCR4B |= (1<<CS40);
+
+
+// PIN_STATUS_1_LED conflicts with the USART TX pin, so we need to disable it
+// Note that this may not work.
+  UCSR1B &= ~(1<<TXEN1);
+  pinMode(PIN_STATUS_1_LED, OUTPUT);
+  digitalWrite(PIN_STATUS_1_LED, LOW);
+  
+  // Popping outputs
+  popper.init();
 }
 
 bool handleData(uint8_t dataSize, uint16_t* data) {
@@ -48,7 +65,9 @@ bool handleData(uint8_t dataSize, uint16_t* data) {
     
     if(balloon >= DEVICE_ADDRESS*OUTPUT_PINCOUNT
        && balloon < (DEVICE_ADDRESS + 1)*OUTPUT_PINCOUNT) {
+      digitalWrite(PIN_STATUS_1_LED, HIGH);
       popper.pop(balloon - DEVICE_ADDRESS*OUTPUT_PINCOUNT, time);
+      digitalWrite(PIN_STATUS_1_LED, LOW);
     }
     
     return true;
@@ -59,9 +78,14 @@ bool handleData(uint8_t dataSize, uint16_t* data) {
 
 
 void loop() {
+  if(millis() > lastSignalTime + SIGNAL_DISPLAY_TIMEOUT) {
+    analogWrite(PIN_STATUS_LED, 255);
+  }
+  
   // Handle incoming data from USB
   if(Serial.available()) {
-    digitalWrite(PIN_STATUS_LED, LOW);
+    analogWrite(PIN_STATUS_LED, 128);
+    lastSignalTime = millis();
     
     if(usbReceiver.parseByte(Serial.read())) {
       uint8_t dataSize = usbReceiver.getPacketSize();
@@ -72,14 +96,14 @@ void loop() {
 
   // Handle incoming data from RS485  
   if(Serial1.available()) {
-    digitalWrite(PIN_STATUS_LED, LOW);
+    analogWrite(PIN_STATUS_LED, 128);
+    lastSignalTime = millis();
     
     if(rs485Receiver.parseByte(Serial1.read())) {
       uint8_t dataSize = rs485Receiver.getPacketSize();
       uint16_t* data = rs485Receiver.getPacket16();
       handleData(dataSize, data);
     }
-    digitalWrite(PIN_STATUS_LED, HIGH);
   }
 }
 

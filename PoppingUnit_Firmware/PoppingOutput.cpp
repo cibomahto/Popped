@@ -1,7 +1,7 @@
 #include "PoppingOutput.h"
 
 uint8_t outputPins[OUTPUT_PINCOUNT] = {
-   1, // PD3- Output 1 - Note: Not usable on RevA
+   2, // PD1- Output 1 - Note: Need to rework for RevA
    5, // PC6- Output 2
   10, // PB6- Output 3
    9, // PB5- Output 4
@@ -24,16 +24,6 @@ void PoppingOutput::init() {
     pinMode(outputPins[output], OUTPUT);
     digitalWrite(outputPins[output], LOW);
   }
-
-//  int output = 0;
-//  while(true) {
-//    digitalWrite(outputPins[output + 8], HIGH);
-//    delay(3000);
-//    digitalWrite(outputPins[output + 8], LOW);
-//    delay(1000);
-//    
-//    output = (output + 1) % 8;
-//  }
 }
 
 // Turn the specified output on for 3 seconds
