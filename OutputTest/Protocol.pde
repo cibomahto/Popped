@@ -32,7 +32,6 @@ class Protocol
     
     data[data.length-1] = crc.getCrc();
 
-    // TODO: chunk here?
     m_outPort.write(data);
     
 //    print("length:");

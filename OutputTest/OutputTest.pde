@@ -8,6 +8,7 @@ String VERSION_STRING = "0.1";
 int NUMBER_OF_CHANNELS = 1*16;
 
 boolean Heartbeat = true;
+int PopLength;
 
 Protocol balloons;
 String portName;
@@ -28,10 +29,16 @@ void setup() {
     }
   }
   
-  // Position controls
   cp5.addToggle("Heartbeat")
    .setPosition(10,10)
    ;
+   
+  cp5.addNumberbox("PopLength")
+     .setPosition(100,10)
+     .setSize(100,14)
+     .setScrollSensitivity(50)
+     .setValue(2000)
+     ;
 
   for(int i = 0; i < NUMBER_OF_CHANNELS; i++) {
     int speakersPerCol = 16;
@@ -72,16 +79,19 @@ void draw() {
     // Pop a balloon
     int message[] = new int[2];
     message[0] = balloonToPop;
-    message[1] = 3000;
+    message[1] = PopLength;
     balloons.sendUpdate(message);
     
     readyToPop = false;
+    
+    println("Sending pop command");
   }
   else if(Heartbeat) {
     // Heartbeat
     int message[] = new int[1];
     message[0] = 0x1234;
     balloons.sendUpdate(message);
+    println("Sending heartbeat");
   }
 }
 
