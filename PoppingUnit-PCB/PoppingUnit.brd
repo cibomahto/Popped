@@ -132,7 +132,7 @@
 </layers>
 <board>
 <plain>
-<text x="65" y="28" size="1.27" layer="25" font="vector" rot="R180" align="bottom-center">RevB 3/8</text>
+<text x="65" y="28" size="1.27" layer="25" font="vector" rot="R180" align="bottom-center">RevC 3/9</text>
 <hole x="3" y="3" drill="3.2"/>
 <text x="20.5" y="18.5" size="1.778" layer="25" font="vector" rot="R210" align="bottom-right">Blinkinlabs</text>
 <hole x="3" y="60" drill="3.2"/>

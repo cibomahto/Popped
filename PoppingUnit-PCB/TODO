@@ -6,3 +6,6 @@ x-Push USB back a smidge
 x-move status led to ??
 x-Add second status LED (Fire!)
 x-Add pads for reset button (just in case)
+
+For RevC:
+x-Move output1 off of TX (swap with status LED)
