@@ -23,15 +23,58 @@ void PoppingOutput::init() {
   for(uint8_t output = 0; output < OUTPUT_PINCOUNT; output++) {
     pinMode(outputPins[output], OUTPUT);
     digitalWrite(outputPins[output], LOW);
+    
+    popExpireTime[output] = 0;
+    isPopping[output] = false;
+  }
+  
+  // PIN_STATUS_1_LED conflicts with the USART TX pin, so we need to disable that function.
+  UCSR1B &= ~(1<<TXEN1);
+  pinMode(PIN_STATUS_1_LED, OUTPUT);
+  digitalWrite(PIN_STATUS_1_LED, LOW);
+}
+
+uint8_t PoppingOutput::getPopCount() {
+  uint8_t count = 0;
+  
+  for(uint8_t output = 0; output < OUTPUT_PINCOUNT; output++) {  
+    if(isPopping[output]) {
+      count++;
+    }
+  }
+
+  return count;
+}
+
+void PoppingOutput::update() {
+  for(uint8_t output = 0; output < OUTPUT_PINCOUNT; output++) {
+    if(isPopping[output]) {
+      if(millis() > popExpireTime[output]) {
+        digitalWrite(outputPins[output], LOW);
+        isPopping[output] = false;
+      }
+    }
+  }
+    
+  if(getPopCount() == 0) {
+    digitalWrite(PIN_STATUS_1_LED, LOW);
   }
 }
 
-// Turn the specified output on for 3 seconds
-// TODO: Make me a timer?
+
 void PoppingOutput::pop(uint8_t output, uint32_t time) {
-  if(output < OUTPUT_PINCOUNT) {
-    digitalWrite(outputPins[output], HIGH);
-    delay(time);
-    digitalWrite(outputPins[output], LOW);
+  // If we aren't already popping the maximum outputs,
+  // and this is a valid output
+  if(output < OUTPUT_PINCOUNT
+     && getPopCount() < MAX_CONCURRENT_POPS) {
+    
+    // If this output isn't already being popped
+    if(isPopping[output] == false) {
+      popExpireTime[output] = millis() + time;
+      isPopping[output] = true;
+      digitalWrite(outputPins[output], HIGH);
+      
+      digitalWrite(PIN_STATUS_1_LED, HIGH);
+    }
   }
 }
