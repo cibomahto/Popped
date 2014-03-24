@@ -794,7 +794,7 @@ Please make sure your boards conform to these design rules.</description>
 <element name="U2" library="reprap" package="SO08" value="SN75176ASOIC" x="25.5" y="12.25" smashed="yes" rot="R90"/>
 <element name="R1" library="adafruit" package="R0603" value="180 DNP" x="21" y="12.25" smashed="yes" rot="R270"/>
 <element name="R2" library="adafruit" package="R0603" value="10k" x="27.75" y="8.5" smashed="yes" rot="R180"/>
-<element name="R8" library="adafruit" package="R0603" value="1k" x="15.5" y="41.25" smashed="yes"/>
+<element name="R8" library="adafruit" package="R0603" value="330" x="15.5" y="41.25" smashed="yes"/>
 <element name="C7" library="adafruit" package="C0603K" value="100nF" x="23.75" y="8.5" smashed="yes"/>
 <element name="U$2" library="sonos_library" package="2X3HEADER" value="2X3HEADER" x="19.75" y="57.75" smashed="yes" rot="R270"/>
 <element name="U1" library="blinkinlabs" package="QFN44ML7X7_LONGLEADS" value="ARDUINO_LEONARDO-REV3B_SMARTPRJ_ATMEGA32U4-XUMU_LONG" x="23.5" y="46.1" smashed="yes" rot="R270"/>
@@ -818,10 +818,10 @@ Please make sure your boards conform to these design rules.</description>
 <element name="U$8" library="blinkinlabs" package="TO252" value="N_MOSFET" x="43" y="51" smashed="yes"/>
 <element name="U$9" library="blinkinlabs" package="TO252" value="N_MOSFET" x="36" y="51" smashed="yes"/>
 <element name="C8" library="adafruit" package="C0603K" value="1uF" x="23" y="53.5" smashed="yes" rot="R90"/>
-<element name="C11" library="adafruit" package="C0603K" value=".3uF" x="37" y="41.5" smashed="yes" rot="R90"/>
+<element name="C11" library="adafruit" package="C0603K" value="DNP" x="37" y="41.5" smashed="yes" rot="R90"/>
 <element name="C12" library="adafruit" package="C0603K" value="100nF" x="28.5" y="36.5" smashed="yes" rot="R180"/>
-<element name="C13" library="adafruit" package="C0603K" value=".3uF" x="35.5" y="41.5" smashed="yes" rot="R90"/>
-<element name="C14" library="adafruit" package="C0603K" value="100nF" x="28.5" y="38" smashed="yes" rot="R180"/>
+<element name="C13" library="adafruit" package="C0603K" value="470nF" x="35.5" y="41.5" smashed="yes" rot="R90"/>
+<element name="C14" library="adafruit" package="C0603K" value="DNP" x="28.5" y="38" smashed="yes" rot="R180"/>
 <element name="LED1" library="SparkFun" package="LED5MM" value="" x="18" y="37.75" smashed="yes" rot="R270">
 <attribute name="VALUE" x="16.1966" y="34.5496" size="1.27" layer="27" ratio="10" rot="R270"/>
 </element>
@@ -905,7 +905,7 @@ Please make sure your boards conform to these design rules.</description>
 <element name="J3" library="con-amp" package="555153-1" value="" x="5.75" y="15" smashed="yes" rot="R270">
 <attribute name="VALUE" x="5.623" y="4.84" size="1.778" layer="27"/>
 </element>
-<element name="R18" library="adafruit" package="R0603" value="1k" x="15" y="39" smashed="yes" rot="R180"/>
+<element name="R18" library="adafruit" package="R0603" value="330" x="15" y="39" smashed="yes" rot="R180"/>
 <element name="LED2" library="SparkFun" package="LED5MM" value="" x="18" y="28" smashed="yes" rot="R270">
 <attribute name="VALUE" x="16.1966" y="24.7996" size="1.27" layer="27" ratio="10" rot="R270"/>
 </element>

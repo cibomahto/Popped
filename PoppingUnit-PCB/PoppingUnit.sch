@@ -7643,7 +7643,7 @@ Standard 2-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="U2" library="reprap" deviceset="SN75176A" device="SOIC"/>
 <part name="R1" library="adafruit" deviceset="R-US_" device="R0603" value="180 DNP"/>
 <part name="R2" library="adafruit" deviceset="R-US_" device="R0603" value="10k"/>
-<part name="R8" library="adafruit" deviceset="R-US_" device="R0603" value="1k"/>
+<part name="R8" library="adafruit" deviceset="R-US_" device="R0603" value="330"/>
 <part name="GND12" library="supply1" deviceset="GND" device=""/>
 <part name="C7" library="adafruit" deviceset="C-US" device="C0603K" value="100nF"/>
 <part name="U$2" library="sonos_library" deviceset="2X3HEADER" device=""/>
@@ -7683,10 +7683,10 @@ Standard 2-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="C8" library="adafruit" deviceset="C-US" device="C0603K" value="1uF"/>
 <part name="GND18" library="supply1" deviceset="GND" device=""/>
 <part name="GND21" library="supply1" deviceset="GND" device=""/>
-<part name="C11" library="adafruit" deviceset="C-US" device="C0603K" value=".3uF"/>
+<part name="C11" library="adafruit" deviceset="C-US" device="C0603K" value="DNP"/>
 <part name="C12" library="adafruit" deviceset="C-US" device="C0603K" value="100nF"/>
-<part name="C13" library="adafruit" deviceset="C-US" device="C0603K" value=".3uF"/>
-<part name="C14" library="adafruit" deviceset="C-US" device="C0603K" value="100nF"/>
+<part name="C13" library="adafruit" deviceset="C-US" device="C0603K" value="470nF"/>
+<part name="C14" library="adafruit" deviceset="C-US" device="C0603K" value="DNP"/>
 <part name="LED1" library="SparkFun" deviceset="LED" device="5MM"/>
 <part name="J2" library="SparkFun" deviceset="POWER_JACK" device="PTH"/>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
@@ -7772,7 +7772,7 @@ Standard 2-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="SUPPLY26" library="SparkFun-Aesthetics" deviceset="VIN" device=""/>
 <part name="SUPPLY27" library="SparkFun-Aesthetics" deviceset="2.8V" device=""/>
 <part name="J3" library="con-amp" deviceset="555153-1" device=""/>
-<part name="R18" library="adafruit" deviceset="R-US_" device="R0603" value="1k"/>
+<part name="R18" library="adafruit" deviceset="R-US_" device="R0603" value="330"/>
 <part name="GND29" library="supply1" deviceset="GND" device=""/>
 <part name="LED2" library="SparkFun" deviceset="LED" device="5MM"/>
 <part name="U$20" library="blinkinlabs" deviceset="BUTTON_MOMENTARY" device=""/>
