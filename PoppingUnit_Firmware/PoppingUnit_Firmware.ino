@@ -1,3 +1,5 @@
+#include <EEPROM.h>
+
 #include "Protocol.h"
 #include "PoppingOutput.h"
 
@@ -5,7 +7,7 @@
 
 
 // Address that this device responds to. Change this for each board.
-#define DEVICE_ADDRESS   0
+#define DEVICE_ADDRESS   1
 
 // System baud rate. Leave at xxx
 #define BAUD_RATE 9600
@@ -19,7 +21,20 @@ PoppingOutput popper;
 
 #define SIGNAL_DISPLAY_TIMEOUT 100  // Number of seconds to continue flashing the display LED, 
 long lastSignalTime;
+boolean isFlashing = false;
 
+void stopFlashing() {
+  analogWrite(PIN_STATUS_LED, 255);
+  isFlashing = false;
+}
+
+void startFlashing() {
+  // Avoid disturbing the output pin if we are already in flash mode
+  if(!isFlashing) {
+    analogWrite(PIN_STATUS_LED, 128);
+    isFlashing = true;
+  }
+}
 
 void setup() {
   // USB input (The baud rate specified here doesn't matter)
@@ -32,16 +47,13 @@ void setup() {
     
   // Status LEDs
   pinMode(PIN_STATUS_LED, OUTPUT);
-  analogWrite(PIN_STATUS_LED, 128);
+  stopFlashing();
 
   // Set timer4 to a slow mode, so that PIN_STATUS_LED light PWMs at a visible rate  
   TCCR4B |= (1<<CS43) | (1<<CS42) | (1<<CS41) | (1<<CS40);
   
   // Popping outputs
   popper.init();
-  
-  // And turn on the watchdog timer, for good measure.
-//  wdt_enable(WDTO_2S);
 }
 
 bool handleData(uint8_t dataSize, uint16_t* data) {
@@ -68,21 +80,18 @@ bool handleData(uint8_t dataSize, uint16_t* data) {
 
 
 void loop() {
-  // Hit the watchdog timer
-//  wdt_reset();
-  
   // Let the popper update itself
   popper.update();
   
   // If we haven't received any data in a while, set the status LED
   // to stop flashing
   if(millis() > lastSignalTime + SIGNAL_DISPLAY_TIMEOUT) {
-    analogWrite(PIN_STATUS_LED, 255);
+    stopFlashing();
   }
   
   // Handle incoming data from USB
   if(Serial.available()) {
-    analogWrite(PIN_STATUS_LED, 128);
+    startFlashing();
     lastSignalTime = millis();
     
     if(usbReceiver.parseByte(Serial.read())) {
@@ -94,7 +103,7 @@ void loop() {
 
   // Handle incoming data from RS485  
   if(Serial1.available()) {
-    analogWrite(PIN_STATUS_LED, 128);
+    startFlashing();
     lastSignalTime = millis();
     
     if(rs485Receiver.parseByte(Serial1.read())) {
