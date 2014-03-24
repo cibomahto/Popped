@@ -5,7 +5,10 @@ ControlP5 cp5;
 
 String VERSION_STRING = "0.1";
 
-int NUMBER_OF_CHANNELS = 1*16;
+int NUMBER_OF_RECEIVERS = 35;
+int OUTPUTS_PER_RECEIVER = 16;
+
+int NUMBER_OF_CHANNELS = NUMBER_OF_RECEIVERS * OUTPUTS_PER_RECEIVER;
 
 boolean Heartbeat = true;
 int PopLength;
@@ -17,7 +20,7 @@ boolean readyToPop = false;
 int balloonToPop;
 
 void setup() {
-  size(1200,300);
+  size(1366,768);
   frameRate(30);
   cp5 = new ControlP5(this);
   
@@ -29,49 +32,78 @@ void setup() {
     }
   }
   
+  // Heartbeat toggle
   cp5.addToggle("Heartbeat")
    .setPosition(10,10)
    ;
    
+  // Popping length
   cp5.addNumberbox("PopLength")
-     .setPosition(100,10)
+     .setPosition(10,60)
      .setSize(100,14)
      .setScrollSensitivity(50)
      .setValue(2000)
      ;
 
-  for(int i = 0; i < NUMBER_OF_CHANNELS; i++) {
-    int speakersPerCol = 16;
-    
-    Bang b = cp5.addBang("balloon"+i)
-       .setPosition(40+i*60, 80)
-       .setSize(40, 40)
-       .setId(i)
-       ;
-  }
-  
   // Debug info
   cp5.addTextlabel("label1")
     .setText("Debugger version " + VERSION_STRING)
-    .setPosition(10,265)
+    .setPosition(10,700)
     ;
 
   if(portName != "") {
     cp5.addTextlabel("label2")
      .setText("Transmitting on " + portName)
-     .setPosition(10,280)
+     .setPosition(10,715)
      ;
   } else {
     cp5.addTextlabel("label2")
      .setText("Could not find a port to transmit on!")
-     .setPosition(10,280)
+     .setPosition(10,715)
      ;
   }   
+
+  // Poppers
+  int POPPERS_X_OFFSET = 300;
+  int POPPERS_Y_OFFSET = 25;
+  int POPPERS_X_SPACING = 54;
+  int POPPERS_Y_SPACING = 21;
+  
+  for(int i = 0; i < NUMBER_OF_CHANNELS; i++) {
+    Bang b = cp5.addBang("balloon"+i)
+       .setPosition(POPPERS_X_OFFSET+(i%OUTPUTS_PER_RECEIVER)*POPPERS_X_SPACING,
+                    POPPERS_Y_OFFSET+(i/OUTPUTS_PER_RECEIVER)*POPPERS_Y_SPACING)
+       .setSize(50, 17)
+       .setId(i)
+       .setLabelVisible(false);
+       ;
+  }
+  
+  // Labels for poppers
+  for(int i = 0; i < OUTPUTS_PER_RECEIVER; i++) {
+    cp5.addTextlabel("output" + str(i))
+     .setText("Output" + str(i))
+     .setPosition(POPPERS_X_OFFSET + i*POPPERS_X_SPACING + 3, POPPERS_Y_OFFSET - 12)
+     ;
+  }
+  
+  for(int i = 0; i < NUMBER_OF_RECEIVERS; i++) {
+    cp5.addTextlabel("receiver" + str(i))
+     .setText("Receiver" + str(i))
+     .setPosition(POPPERS_X_OFFSET - 60, POPPERS_Y_OFFSET + i*POPPERS_Y_SPACING + 3)
+     ;
+  }
 }
 
 void draw() {
   background(0);
   stroke(255);
+  
+  pushStyle();
+    stroke(50);
+    fill(50);
+    rect(0,0,210,768);
+  popStyle();
   
   if(readyToPop) {
     print("popping ");
