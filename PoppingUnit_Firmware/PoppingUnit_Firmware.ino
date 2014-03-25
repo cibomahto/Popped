@@ -1,15 +1,11 @@
-#include <EEPROM.h>
-
 #include "Protocol.h"
 #include "PoppingOutput.h"
 
-#include <avr/wdt.h>
-
 
 // Address that this device responds to. Change this for each board.
-#define DEVICE_ADDRESS   1
+#define DEVICE_ADDRESS   0
 
-// System baud rate. Leave at xxx
+// System baud rate. Leave at 9600
 #define BAUD_RATE 9600
 
 #define PIN_STATUS_LED    13  // PC7
@@ -19,15 +15,18 @@ Protocol rs485Receiver;
 
 PoppingOutput popper;
 
-#define SIGNAL_DISPLAY_TIMEOUT 100  // Number of seconds to continue flashing the display LED, 
-long lastSignalTime;
-boolean isFlashing = false;
+#define SIGNAL_DISPLAY_TIMEOUT 200  // Number of seconds to continue flashing the display LED, 
+long lastSignalTime;                // The last time (in millis()) that a serial byte was received
+boolean isFlashing = false;         // True if the status LED is currently flashing
 
+
+// Set the status LED to be on, not flashing
 void stopFlashing() {
   analogWrite(PIN_STATUS_LED, 255);
   isFlashing = false;
 }
 
+// Start flashing the status LED, if it's not already flashing
 void startFlashing() {
   // Avoid disturbing the output pin if we are already in flash mode
   if(!isFlashing) {
@@ -46,7 +45,6 @@ void setup() {
   rs485Receiver.reset();
     
   // Status LEDs
-  pinMode(PIN_STATUS_LED, OUTPUT);
   stopFlashing();
 
   // Set timer4 to a slow mode, so that PIN_STATUS_LED light PWMs at a visible rate  
@@ -71,9 +69,9 @@ bool handleData(uint8_t dataSize, uint16_t* data) {
     uint16_t balloon = data[0];
     uint16_t time = data[1];
     
-    if(balloon >= DEVICE_ADDRESS*OUTPUT_PINCOUNT
-       && balloon < (DEVICE_ADDRESS + 1)*OUTPUT_PINCOUNT) {
-      popper.pop(balloon - DEVICE_ADDRESS*OUTPUT_PINCOUNT, time);
+    if(balloon >= DEVICE_ADDRESS*OUTPUT_COUNT
+       && balloon < (DEVICE_ADDRESS + 1)*OUTPUT_COUNT) {
+      popper.pop(balloon - DEVICE_ADDRESS*OUTPUT_COUNT, time);
     }
   }
 }

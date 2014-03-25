@@ -1,7 +1,7 @@
 #include "PoppingOutput.h"
 
-uint8_t outputPins[OUTPUT_PINCOUNT] = {
-   2, // PD1- Output 1 - Note: Need to rework for RevA
+uint8_t outputPins[OUTPUT_COUNT] = {
+   2, // PD1- Output 1
    5, // PC6- Output 2
   10, // PB6- Output 3
    9, // PB5- Output 4
@@ -20,7 +20,7 @@ uint8_t outputPins[OUTPUT_PINCOUNT] = {
 };
 
 void PoppingOutput::init() {
-  for(uint8_t output = 0; output < OUTPUT_PINCOUNT; output++) {
+  for(uint8_t output = 0; output < OUTPUT_COUNT; output++) {
     pinMode(outputPins[output], OUTPUT);
     digitalWrite(outputPins[output], LOW);
     
@@ -37,7 +37,7 @@ void PoppingOutput::init() {
 uint8_t PoppingOutput::getPopCount() {
   uint8_t count = 0;
   
-  for(uint8_t output = 0; output < OUTPUT_PINCOUNT; output++) {  
+  for(uint8_t output = 0; output < OUTPUT_COUNT; output++) {  
     if(isPopping[output]) {
       count++;
     }
@@ -47,7 +47,7 @@ uint8_t PoppingOutput::getPopCount() {
 }
 
 void PoppingOutput::update() {
-  for(uint8_t output = 0; output < OUTPUT_PINCOUNT; output++) {
+  for(uint8_t output = 0; output < OUTPUT_COUNT; output++) {
     if(isPopping[output]) {
       if(millis() > popExpireTime[output]) {
         digitalWrite(outputPins[output], LOW);
@@ -65,15 +65,19 @@ void PoppingOutput::update() {
 void PoppingOutput::pop(uint8_t output, uint32_t time) {
   // If we aren't already popping the maximum outputs,
   // and this is a valid output
-  if(output < OUTPUT_PINCOUNT
+  if(output < OUTPUT_COUNT
      && getPopCount() < MAX_CONCURRENT_POPS) {
-    
+
+    // Clip the time to the maximum
+    if(time > MAX_POP_TIME) {
+      time = MAX_POP_TIME;
+    }
+       
     // If this output isn't already being popped
     if(isPopping[output] == false) {
       popExpireTime[output] = millis() + time;
       isPopping[output] = true;
       digitalWrite(outputPins[output], HIGH);
-      
       digitalWrite(PIN_STATUS_1_LED, HIGH);
     }
   }
