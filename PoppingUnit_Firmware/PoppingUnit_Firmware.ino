@@ -3,7 +3,7 @@
 
 
 // Address that this device responds to. Change this for each board.
-#define DEVICE_ADDRESS   0
+#define DEVICE_ADDRESS   31
 
 // System baud rate. Leave at 9600
 #define BAUD_RATE 9600

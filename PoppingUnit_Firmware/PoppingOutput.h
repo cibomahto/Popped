@@ -8,7 +8,7 @@
 #define OUTPUT_COUNT 16        // Number of outputs present in the hardware
 #define MAX_CONCURRENT_POPS 1  // Number of outputs that can be active at once (Hardware limited)
 
-#define MAX_POP_TIME 2000      // Maximum amount of time a popping output can be activated for (ms) 
+#define MAX_POP_TIME 10000      // Maximum amount of time a popping output can be activated for (ms) 
 
 // Class to manage the popping outputs
 class PoppingOutput {

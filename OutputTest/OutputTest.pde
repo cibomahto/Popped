@@ -1,23 +1,83 @@
 import controlP5.*;
 import processing.serial.*;
 
-ControlP5 cp5;
-
-String VERSION_STRING = "0.1";
-
-int NUMBER_OF_RECEIVERS = 35;
+int NUMBER_OF_RECEIVERS = 32;
 int OUTPUTS_PER_RECEIVER = 16;
 
 int NUMBER_OF_CHANNELS = NUMBER_OF_RECEIVERS * OUTPUTS_PER_RECEIVER;
 
+ControlP5 cp5;
+
+Textarea statusWindow;
+Bang[] balloonOutputs = new Bang[NUMBER_OF_CHANNELS];
+
+String VERSION_STRING = "1.1";
+
 boolean Heartbeat = true;
 int PopLength;
 
-Protocol balloons;
+Protocol balloons;          // balloon popping output
 String portName;
 
-boolean readyToPop = false;
-int balloonToPop;
+boolean readyToPop = false; // true if there is a user scheduled pop
+int balloonToPop;           // user scheduled pop
+
+boolean Playback = false;   // toggle for playback
+boolean playing = false;    // true if we are playing back
+int PopSpacing;             // length of time between pops (ms)
+int nextPopTime;            // next time a balloon should be popped (compare to millis())
+Player player;              // Where we get the popping sequence from
+
+void sendHeartbeat() {
+  if(balloons == null) {
+//    displayMessage("Could not send heartbeat, no balloon hardware found!");
+    return;
+  }
+  
+  // Heartbeat
+//    displayMessage("Sending heartbeat");
+  int message[] = new int[1];
+  message[0] = 0x1234;
+  balloons.sendUpdate(message);
+}
+
+void sendPopCommand(int balloon, int len) {
+  displayMessage("Popping " + balloon
+                 + " (" + (balloon/OUTPUTS_PER_RECEIVER)
+                 + "-" + (balloon%OUTPUTS_PER_RECEIVER) + ")");
+  balloonOutputs[balloon].setColorForeground(color(60,0,60));
+  
+  if(balloons == null) {
+//    displayMessage("Could not send popping command, no balloon hardware found!");
+    return;
+  }
+  
+  if(balloon >= NUMBER_OF_CHANNELS || balloon < 0) {
+    displayMessage("Balloon " + balloon + " out of range!");
+    return;
+  } 
+  
+  // Pop a balloon
+  int message[] = new int[2];
+  message[0] = balloon;
+  message[1] = len;
+  
+  // Send the message 5 times, just in case there is some line noise
+  for(int i = 0; i < 5; i++) {
+    balloons.sendUpdate(message);
+  }
+}
+
+void displayMessage(String message) {
+  println(message);
+  
+  String text = statusWindow.getText();
+  
+  text += message + "\n";
+  
+  statusWindow.setText(text);
+  statusWindow.scroll(1);
+}
 
 void setup() {
   size(1366,768);
@@ -32,18 +92,49 @@ void setup() {
     }
   }
   
+  cp5.addTextlabel("title")
+    .setText("Popping Control System")
+    .setPosition(10,10)
+    .setFont(createFont("Georgia",17))
+    ;
+  
   // Heartbeat toggle
   cp5.addToggle("Heartbeat")
-   .setPosition(10,10)
+   .setPosition(10,60)
    ;
    
   // Popping length
-  cp5.addNumberbox("PopLength")
-     .setPosition(10,60)
+  cp5.addSlider("PopLength")
+     .setPosition(10,120)
      .setSize(100,14)
-     .setScrollSensitivity(50)
-     .setValue(2000)
+     .setRange(1000,5000)
+     .setValue(3000)
+     .setNumberOfTickMarks(41)
+     .showTickMarks(false)
      ;
+
+  cp5.addToggle("Playback")
+   .setPosition(10,180)
+   ;
+     
+  cp5.addSlider("PopSpacing")
+     .setPosition(10,240)
+     .setSize(100,14)
+     .setRange(500,12000)
+     .setValue(500)
+     .setNumberOfTickMarks(24)
+     .showTickMarks(false)
+     ;
+
+  statusWindow = cp5.addTextarea("statusWindow")
+                  .setPosition(10,300)
+                  .setSize(180,350)
+                  .setFont(createFont("arial",12))
+                  .setLineHeight(14)
+                  .setColor(color(200))
+                  .setColorBackground(color(255,100))
+                  .setColorForeground(color(255,100));
+                  ;
 
   // Debug info
   cp5.addTextlabel("label1")
@@ -66,14 +157,15 @@ void setup() {
   // Poppers
   int POPPERS_X_OFFSET = 300;
   int POPPERS_Y_OFFSET = 25;
-  int POPPERS_X_SPACING = 54;
-  int POPPERS_Y_SPACING = 21;
+  int POPPERS_X_SPACING = 64;
+  int POPPERS_Y_SPACING = 23;
+  
   
   for(int i = 0; i < NUMBER_OF_CHANNELS; i++) {
-    Bang b = cp5.addBang("balloon"+i)
+    balloonOutputs[i] = cp5.addBang("balloon"+i)
        .setPosition(POPPERS_X_OFFSET+(i%OUTPUTS_PER_RECEIVER)*POPPERS_X_SPACING,
                     POPPERS_Y_OFFSET+(i/OUTPUTS_PER_RECEIVER)*POPPERS_Y_SPACING)
-       .setSize(50, 17)
+       .setSize(60, 19)
        .setId(i)
        .setLabelVisible(false);
        ;
@@ -106,25 +198,27 @@ void draw() {
   popStyle();
   
   if(readyToPop) {
-    print("popping ");
-    println(balloonToPop);    
-    // Pop a balloon
-    int message[] = new int[2];
-    message[0] = balloonToPop;
-    message[1] = PopLength;
-    balloons.sendUpdate(message);
+    sendPopCommand(balloonToPop, PopLength);
     
     readyToPop = false;
+  }
+  else if(playing && (millis() > nextPopTime)) {
+    int newPosition = player.getNext();
     
-    println("Sending pop command");
+    if(newPosition == -1) {
+      playing = false;
+      player = null;
+    }
+    else {
+      nextPopTime = millis() + PopSpacing;
+      
+      sendPopCommand(newPosition, PopLength);
+    }
   }
   else if(Heartbeat) {
-    // Heartbeat
-    int message[] = new int[1];
-    message[0] = 0x1234;
-    balloons.sendUpdate(message);
-    println("Sending heartbeat");
+    sendHeartbeat();
   }
+  
 }
 
 public void controlEvent(ControlEvent theEvent) {
@@ -135,10 +229,22 @@ public void controlEvent(ControlEvent theEvent) {
     }
   }
   
-  println(
-  "## controlEvent / id:"+theEvent.controller().id()+
-    " / name:"+theEvent.controller().name()+
-    " / label:"+theEvent.controller().label()+
-    " / value:"+theEvent.controller().value()
-    );
+  if(theEvent.controller().getName().equals("Playback")) {
+    if(Playback == true) {
+      playing = true;
+      player = new Player("sequence.txt");
+      nextPopTime = millis(); 
+    }
+    else {
+      playing = false;
+      player = null;
+    }
+  }
+  
+//  println(
+//  "## controlEvent / id:"+theEvent.controller().id()+
+//    " / name:"+theEvent.controller().name()+
+//    " / label:"+theEvent.controller().label()+
+//    " / value:"+theEvent.controller().value()
+//    );
 }
